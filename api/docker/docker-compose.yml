@@ -1,0 +1,19 @@
+version: "1"
+services:
+  test-mysql:
+    build:
+      context: ./test-mysql
+      dockerfile: Dockerfile
+    container_name: "test-mysql"
+    volumes:
+      - ~/.test/master/data:/var/lib/mysql
+    environment:
+      - TZ=Asia/Seoul
+      - PGID=0
+      - PUID=0
+      - MYSQL_ROOT_PASSWORD=master
+      - MYSQL_USER=master
+      - MYSQL_PASSWORD=master
+    ports:
+      - 33306:3306
+    restart: always
