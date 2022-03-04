@@ -52,6 +52,6 @@ export class User extends BaseEntity implements IUser {
   deletedAt: Date;
 
   static summaryData(alias: string) {
-    return ["id", "name", "email"].map((col) => `${alias}.${col}`);
+    return ["id", "name", "phone", "email"].map((col) => `${alias}.${col}`);
   }
 }
