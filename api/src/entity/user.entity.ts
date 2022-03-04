@@ -33,6 +33,11 @@ export class User extends BaseEntity implements IUser {
   })
   email: string;
 
+  @Column({
+    nullable: false,
+  })
+  phone: string;
+
   @CreateDateColumn({
     comment: "작성일",
   })
@@ -45,4 +50,8 @@ export class User extends BaseEntity implements IUser {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  static summaryData(alias: string) {
+    return ["id", "name", "email"].map((col) => `${alias}.${col}`);
+  }
 }

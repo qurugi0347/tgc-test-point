@@ -42,7 +42,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       message: exception.toString(),
     };
 
-    console.error(exception);
+    console.error(logs);
 
     response.status(status).json({
       statusCode: status,
