@@ -10,17 +10,22 @@ import {
   Param,
   UsePipes,
   ValidationPipe,
+  ParseIntPipe,
 } from "@nestjs/common";
 
 import { User } from "src/entity";
-import { UserService } from "./user.service";
+import { UserService } from "./";
+import { UserPointService } from "src/feature/user_point";
 import { IPaginationResult } from "src/feature/common/common.interface";
 import { PaginationDto } from "src/feature/common/common.dto";
 
 @ApiTags("User")
 @Controller("users")
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly userPointService: UserPointService
+  ) {}
 
   @Get("/")
   @UsePipes(
@@ -33,5 +38,10 @@ export class UserController {
     @Query() query: PaginationDto
   ): Promise<IPaginationResult<User>> {
     return this.userService.findAll(query);
+  }
+
+  @Get("/:userId/points")
+  async findUserPoint(@Param("userId", ParseIntPipe) userId: number) {
+    return this.userPointService.findTotalPoint(userId);
   }
 }

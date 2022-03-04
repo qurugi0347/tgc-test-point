@@ -1,11 +1,11 @@
 import { Injectable, HttpException } from "@nestjs/common";
 
-import { UserRepository } from "./user.repository";
 import { User } from "src/entity";
 import {
   IPagination,
   IPaginationResult,
 } from "src/feature/common/common.interface";
+import { UserRepository } from "./";
 
 @Injectable()
 export class UserService {
