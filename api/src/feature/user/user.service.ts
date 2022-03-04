@@ -2,15 +2,28 @@ import { Injectable, HttpException } from "@nestjs/common";
 
 import { UserRepository } from "./user.repository";
 import { User } from "src/entity";
+import {
+  IPagination,
+  IPaginationResult,
+} from "src/feature/common/common.interface";
 
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async findAll(): Promise<User[]> {
-    return this.userRepository
+  async findAll(pagination: IPagination): Promise<IPaginationResult<User>> {
+    const userSelectQuery = this.userRepository
       .makeQueryBuilder()
-      .select(User.summaryData("user"))
+      .select(User.summaryData("user"));
+    const total = await userSelectQuery.getCount();
+    const userData = await userSelectQuery
+      .skip(pagination.limit * (pagination.page - 1))
+      .take(pagination.limit)
       .getMany();
+    return {
+      ...pagination,
+      total: total,
+      data: userData,
+    };
   }
 }
