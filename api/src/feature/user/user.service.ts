@@ -18,20 +18,22 @@ export class UserService {
   ): Promise<IPaginationResult<User>> {
     const userSelectQuery = this.userRepository
       .makeQueryBuilder()
-      .select(User.summaryData("user"))
-      .andWhere(
+      .select(User.summaryData("user"));
+    if (search.search) {
+      userSelectQuery.andWhere(
         `
-        (
-          user.name like :search
-          or user.email like :search
-          or user.phone like :phoneSearch
-        )
-      `,
+          (
+            user.name like :search
+            or user.email like :search
+            or user.phone like :phoneSearch
+          )
+        `,
         {
           search: `%${search.search}%`,
           phoneSearch: `%${search.search.replace(/-/, "")}%`,
         }
       );
+    }
     const total = await userSelectQuery.getCount();
     const userData = await userSelectQuery
       .offset(pagination.limit * (pagination.page - 1))
