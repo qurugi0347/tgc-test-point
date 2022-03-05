@@ -59,6 +59,12 @@ export class UserPointService {
           );
         }
       }
+      if (leftAmount > 0) {
+        throw new HttpException(
+          `차감 예정 포인트보다 덜 차감되었습니다.`,
+          HttpStatus.INTERNAL_SERVER_ERROR
+        );
+      }
       await queryRunner.manager.save(updatedPoints);
     } else {
       await this.userPointRepository.addUserPoint(
