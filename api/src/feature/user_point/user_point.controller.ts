@@ -12,6 +12,7 @@ import {
   ParseIntPipe,
 } from "@nestjs/common";
 import { getConnection } from "typeorm";
+import { transactionRunner } from "src/module/database/transaction";
 
 import { User } from "src/entity";
 import { UserService } from "../user";
@@ -42,23 +43,8 @@ export class UserPointController {
     await this.userService.findOne(userId);
     body.userId = userId;
 
-    const queryRunner = getConnection().createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-    try {
-      await this.userPointService.modifyPoint(body, queryRunner);
-      await queryRunner.commitTransaction();
-    } catch (error) {
-      console.error(error);
-      await queryRunner.rollbackTransaction();
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
-      throw error;
-    } finally {
-      if (!queryRunner.isReleased) {
-        await queryRunner.release();
-      }
-    }
+    await transactionRunner(async (queryRunner) => {
+      return await this.userPointService.modifyPoint(body, queryRunner);
+    });
   }
 }
