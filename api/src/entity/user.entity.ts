@@ -13,6 +13,7 @@ import {
 } from "typeorm";
 
 import { IUser } from "src/feature/user/user.interface";
+import { UserPointLogGroup } from "./";
 
 @Entity({ name: "user" })
 export class User extends BaseEntity implements IUser {
@@ -50,6 +51,14 @@ export class User extends BaseEntity implements IUser {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  point: number;
+
+  @OneToMany(
+    () => UserPointLogGroup,
+    (userPointLogGroup) => userPointLogGroup.id
+  )
+  userPointLogGroups: UserPointLogGroup[];
 
   static summaryData(alias: string): string[] {
     return ["id", "name", "phone", "email"].map((col) => `${alias}.${col}`);

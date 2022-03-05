@@ -14,13 +14,17 @@ import {
 
 import { User } from "src/entity";
 import { UserService } from "./";
+import { UserPointService } from "../user_point";
 import { IPaginationResult } from "src/feature/common/common.interface";
 import { PaginationDto, SearchDto } from "src/feature/common/common.dto";
 
 @ApiTags("User")
 @Controller("users")
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly userPointService: UserPointService
+  ) {}
 
   @Get("/")
   @UsePipes(
@@ -38,6 +42,14 @@ export class UserController {
 
   @Get("/:userId")
   async findUser(@Param("userId", ParseIntPipe) userId: number): Promise<User> {
-    return this.userService.findOne(userId);
+    const user = await this.userService.findOne(userId);
+    user.point = await this.userPointService.findTotalPoint(userId);
+    user.userPointLogGroups = (
+      await this.userPointService.findUserPoingLog(userId, {
+        page: 1,
+        limit: 10,
+      })
+    ).data;
+    return user;
   }
 }

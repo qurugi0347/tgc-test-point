@@ -28,14 +28,6 @@ export class UserPointController {
     private readonly userPointService: UserPointService
   ) {}
 
-  @Get("/")
-  async findUserPoint(
-    @Param("userId", ParseIntPipe) userId: number
-  ): Promise<number> {
-    await this.userService.findOne(userId);
-    return this.userPointService.findTotalPoint(userId);
-  }
-
   @Put("/")
   async updateUserPoint(
     @Param("userId", ParseIntPipe) userId: number,
