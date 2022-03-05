@@ -1,5 +1,5 @@
 export interface IUserPoint {
-  userId: number;
+  userId?: number;
   amount: number;
 }
 

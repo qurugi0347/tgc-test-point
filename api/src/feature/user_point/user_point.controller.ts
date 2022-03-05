@@ -13,8 +13,9 @@ import {
 } from "@nestjs/common";
 
 import { User } from "src/entity";
-import { UserService } from "src/feature/user";
-import { UserPointService } from "src/feature/user_point";
+import { UserService } from "../user";
+import { UserPointService } from "./";
+import { ModifyPointDto } from "./user_point.dto";
 
 @ApiTags("UserPoint")
 @Controller("users/:userId/points")
@@ -30,5 +31,15 @@ export class UserPointController {
   ): Promise<number> {
     await this.userService.findOne(userId);
     return this.userPointService.findTotalPoint(userId);
+  }
+
+  @Put("/")
+  async updateUserPoint(
+    @Param("userId", ParseIntPipe) userId: number,
+    @Body() body: ModifyPointDto
+  ) {
+    await this.userService.findOne(userId);
+    body.userId = userId;
+    return this.userPointService.modifyPoint(body);
   }
 }
