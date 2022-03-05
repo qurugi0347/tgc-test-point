@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Repository, QueryRunner } from "typeorm";
 
 import { UserPointRepository } from "./user_point.repository";
 import { UserPoint, UserPointLogGroup } from "src/entity";
@@ -22,7 +22,7 @@ export class UserPointService {
     return userPoints[userId] ?? 0;
   }
 
-  async modifyPoint(modify: IModifyUserPoint) {
+  async modifyPoint(modify: IModifyUserPoint, queryRunner: QueryRunner) {
     const { amount: diffAmount, userId } = modify;
     if (diffAmount === 0) {
       throw new HttpException(
@@ -39,7 +39,10 @@ export class UserPointService {
           HttpStatus.BAD_REQUEST
         );
       }
-      const points = await this.userPointRepository.findUserPoints(userId);
+      const points = await this.userPointRepository.findUserPoints(
+        userId,
+        queryRunner
+      );
       let leftAmount = Math.abs(diffAmount);
       const updatedPoints = [];
       for (let i = 0; i < points.length; i++) {
@@ -56,13 +59,17 @@ export class UserPointService {
           );
         }
       }
-      await this.userPointRepository.save(updatedPoints);
+      await queryRunner.manager.save(updatedPoints);
     } else {
-      await this.userPointRepository.addUserPoint(userId, diffAmount);
+      await this.userPointRepository.addUserPoint(
+        userId,
+        diffAmount,
+        queryRunner
+      );
     }
 
     const logGroup = new UserPointLogGroup();
     Object.assign(logGroup, modify);
-    await this.userPointLogGroupRepository.save(logGroup);
+    await queryRunner.manager.save(logGroup);
   }
 }
