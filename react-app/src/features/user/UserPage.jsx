@@ -25,7 +25,13 @@ const UserPage = () => {
     modalContext.loading();
     const res = await getUserList(searchQuery);
     modalContext.popLoading();
-    if (res.status !== 200) return;
+    if (res.status >= 400) {
+      modalContext.alert({
+        title: "오류",
+        description: res.data?.message || `${res.statusText}`,
+      });
+      return;
+    }
     setMaxPage(Math.ceil(res.data.total / res.data.limit) || 1);
     setUserData(res.data?.data);
   };
@@ -59,7 +65,7 @@ const UserPage = () => {
                   modalContext.close();
                   navigate({
                     pathname: `/points/`,
-                    searchQuery: `?userId=${userId}`,
+                    search: `?userId=${userId}`,
                   });
                 }}
               />,

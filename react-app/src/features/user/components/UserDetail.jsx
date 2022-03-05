@@ -66,6 +66,8 @@ const UserDetail = ({id, onClickDetail}) => {
                   </LogItem>
                 );
               })}
+              {userPointLogs.length === 0 &&
+                "포인트 적립, 차감 내역이 없습니다."}
             </LogSection>
             <BaseButton onClick={onClickDetail}>자세히보기</BaseButton>
           </>
