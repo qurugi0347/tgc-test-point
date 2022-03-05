@@ -39,12 +39,15 @@ export class UserPointController {
   async updateUserPoint(
     @Param("userId", ParseIntPipe) userId: number,
     @Body() body: ModifyPointDto
-  ) {
+  ): Promise<string> {
     await this.userService.findOne(userId);
     body.userId = userId;
 
     await transactionRunner(async (queryRunner) => {
       return await this.userPointService.modifyPoint(body, queryRunner);
     });
+    return `${Math.abs(body.amount)}P ${
+      body.amount > 0 ? "부여" : "차감"
+    } 완료`;
   }
 }
