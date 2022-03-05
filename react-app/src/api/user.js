@@ -6,6 +6,16 @@ export const getUserList = async (queryData) => {
     return result;
   } catch (e) {
     console.error(e);
-    return e;
+    return e.response;
+  }
+};
+
+export const getUserDetail = async (userId) => {
+  try {
+    const result = await apiClient.get(`/users/${userId}`);
+    return result;
+  } catch (e) {
+    console.error(e);
+    return e.response;
   }
 };

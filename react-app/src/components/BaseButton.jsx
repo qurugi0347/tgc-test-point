@@ -8,6 +8,7 @@ const BaseButton = styled.div`
   &.small {
     padding: 4px 8px;
   }
+  text-align: center;
 `;
 
 export default BaseButton;

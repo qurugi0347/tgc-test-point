@@ -4,6 +4,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 import BaseLayout from "components/layout/BaseLayout";
 import useModalContext from "hooks/useModalContext";
 import UserList from "./components/UserList";
+import UserDetail from "./components/UserDetail";
 import SearchSection from "./components/SearchSection";
 import Pagination from "components/Pagination";
 import queryString from "query-string";
@@ -48,7 +49,23 @@ const UserPage = () => {
     <BaseLayout title="유저">
       <ContentsWrapper>
         <SearchSection />
-        <UserList userData={userData} />
+        <UserList
+          userData={userData}
+          onClickItem={(userId) => {
+            modalContext.custom(
+              <UserDetail
+                id={userId}
+                onClickDetail={() => {
+                  modalContext.close();
+                  navigate({
+                    pathname: `/points/`,
+                    searchQuery: `?userId=${userId}`,
+                  });
+                }}
+              />,
+            );
+          }}
+        />
         <Pagination
           maxPage={maxPage}
           page={queryData.page || 1}

@@ -1,9 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 
-const UserItem = ({id, name, email, phone}) => {
+const UserItem = ({id, name, email, phone, onClickItem}) => {
   return (
-    <Wrapper>
+    <Wrapper
+      onClick={() => {
+        if (onClickItem) onClickItem(id);
+      }}>
       <div>{name}</div>
       <div>
         <span>{email}</span>
@@ -17,6 +20,7 @@ const UserItem = ({id, name, email, phone}) => {
 const Wrapper = styled.div`
   border-bottom: 1px solid;
   padding: 8px 16px;
+  cursor: pointer;
 `;
 
 export default UserItem;

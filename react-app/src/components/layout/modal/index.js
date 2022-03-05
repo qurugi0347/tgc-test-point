@@ -68,7 +68,7 @@ const DefaultModalForm = styled.div`
   border-radius: 20px;
   padding: 20px;
   overflow: hidden;
-  background: ${({theme}) => theme.ui00};
+  background: white;
   text-align: center;
 `;
 
