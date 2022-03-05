@@ -33,9 +33,6 @@ export class UserPointLogGroup extends BaseEntity implements IModifyUserPoint {
   })
   user: User;
 
-  @ManyToMany(() => UserPoint, (userPoint) => userPoint.id)
-  userPoints: UserPoint[];
-
   @Column({
     nullable: false,
     unsigned: true,

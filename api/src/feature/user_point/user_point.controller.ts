@@ -11,10 +11,11 @@ import {
   ValidationPipe,
   ParseIntPipe,
 } from "@nestjs/common";
-import { getConnection } from "typeorm";
 import { transactionRunner } from "src/module/database/transaction";
 
-import { User } from "src/entity";
+import { User, UserPointLogGroup } from "src/entity";
+import { IPaginationResult } from "src/feature/common/common.interface";
+import { PaginationDto } from "src/feature/common/common.dto";
 import { UserService } from "../user";
 import { UserPointService } from "./";
 import { ModifyPointDto } from "./user_point.dto";
@@ -49,5 +50,19 @@ export class UserPointController {
     return `${Math.abs(body.amount)}P ${
       body.amount > 0 ? "부여" : "차감"
     } 완료`;
+  }
+
+  @Get("/logs")
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: { enableImplicitConversion: true },
+    })
+  )
+  async findUserPointLogs(
+    @Param("userId", ParseIntPipe) userId: number,
+    @Query() pagination: PaginationDto
+  ): Promise<IPaginationResult<UserPointLogGroup>> {
+    return this.userPointService.findUserPoingLog(userId, pagination);
   }
 }

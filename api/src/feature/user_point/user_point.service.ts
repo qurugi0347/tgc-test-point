@@ -3,16 +3,20 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository, QueryRunner } from "typeorm";
 
 import { UserPointRepository } from "./user_point.repository";
+import { UserPointLogGroupRepository } from "../user_point_log_group/";
 import { UserPoint, UserPointLogGroup } from "src/entity";
 import { UserRepository } from "../user";
 import { IModifyUserPoint } from "./user_point.interface";
+import {
+  IPaginationResult,
+  IPagination,
+} from "src/feature/common/common.interface";
 
 @Injectable()
 export class UserPointService {
   constructor(
     private readonly userPointRepository: UserPointRepository,
-    @InjectRepository(UserPointLogGroup)
-    private userPointLogGroupRepository: Repository<UserPointLogGroup>
+    private readonly userPointLogGroupRepository: UserPointLogGroupRepository
   ) {}
 
   async findTotalPoint(userId: number): Promise<number> {
@@ -77,5 +81,25 @@ export class UserPointService {
     const logGroup = new UserPointLogGroup();
     Object.assign(logGroup, modify);
     await queryRunner.manager.save(logGroup);
+  }
+
+  async findUserPoingLog(
+    userId: number,
+    pagination: IPagination
+  ): Promise<IPaginationResult<UserPointLogGroup>> {
+    const total = await this.userPointLogGroupRepository
+      .findUserPointLogsQuery(userId)
+      .getCount();
+
+    const logs = await this.userPointLogGroupRepository
+      .findUserPointLogsQuery(userId)
+      .offset((pagination.page - 1) * pagination.limit)
+      .limit(pagination.limit)
+      .getMany();
+    return {
+      ...pagination,
+      data: logs,
+      total,
+    };
   }
 }

@@ -14,7 +14,7 @@ export class UserPointRepository extends Repository<UserPoint> {
     return this.createQueryBuilder("user_point", queryRunner);
   }
 
-  findActiveUserPoint(
+  findActiveUserPointQuery(
     userIds: number[],
     queryRunner?: QueryRunner
   ): SelectQueryBuilder<UserPoint> {
@@ -37,7 +37,7 @@ export class UserPointRepository extends Repository<UserPoint> {
     queryRunner?: QueryRunner
   ): Promise<Record<number, number>> {
     if (userIds.length === 0) return {};
-    const userPoints: IUserPoint[] = await this.findActiveUserPoint(
+    const userPoints: IUserPoint[] = await this.findActiveUserPointQuery(
       userIds,
       queryRunner
     )
@@ -58,7 +58,7 @@ export class UserPointRepository extends Repository<UserPoint> {
     userId: number,
     queryRunner?: QueryRunner
   ): Promise<UserPoint[]> {
-    const userPoints: UserPoint[] = await this.findActiveUserPoint(
+    const userPoints: UserPoint[] = await this.findActiveUserPointQuery(
       [userId],
       queryRunner
     )

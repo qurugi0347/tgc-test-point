@@ -17,8 +17,8 @@ export class UserService {
       .select(User.summaryData("user"));
     const total = await userSelectQuery.getCount();
     const userData = await userSelectQuery
-      .skip(pagination.limit * (pagination.page - 1))
-      .take(pagination.limit)
+      .offset(pagination.limit * (pagination.page - 1))
+      .limit(pagination.limit)
       .getMany();
     return {
       ...pagination,
