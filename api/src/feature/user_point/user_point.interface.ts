@@ -5,4 +5,5 @@ export interface IUserPoint {
 
 export interface IModifyUserPoint extends IUserPoint {
   reason: string;
+  detail?: string;
 }

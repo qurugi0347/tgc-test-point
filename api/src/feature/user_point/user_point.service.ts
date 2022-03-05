@@ -1,13 +1,19 @@
 import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
 import { UserPointRepository } from "./user_point.repository";
-import { UserPoint } from "src/entity";
+import { UserPoint, UserPointLogGroup } from "src/entity";
 import { UserRepository } from "../user";
 import { IModifyUserPoint } from "./user_point.interface";
 
 @Injectable()
 export class UserPointService {
-  constructor(private readonly userPointRepository: UserPointRepository) {}
+  constructor(
+    private readonly userPointRepository: UserPointRepository,
+    @InjectRepository(UserPointLogGroup)
+    private userPointLogGroupRepository: Repository<UserPointLogGroup>
+  ) {}
 
   async findTotalPoint(userId: number): Promise<number> {
     const userPoints = await this.userPointRepository.findUserTotalPoint([
@@ -54,5 +60,9 @@ export class UserPointService {
     } else {
       await this.userPointRepository.addUserPoint(userId, diffAmount);
     }
+
+    const logGroup = new UserPointLogGroup();
+    Object.assign(logGroup, modify);
+    await this.userPointLogGroupRepository.save(logGroup);
   }
 }

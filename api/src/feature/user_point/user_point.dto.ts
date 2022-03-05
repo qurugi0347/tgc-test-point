@@ -10,7 +10,7 @@ import {
 import { Type } from "class-transformer";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
-import { IUserPoint, IModifyUserPoint } from "./user_point.interface";
+import { IModifyUserPoint } from "./user_point.interface";
 
 export class ModifyPointDto implements IModifyUserPoint {
   // params에서 cast
@@ -21,8 +21,13 @@ export class ModifyPointDto implements IModifyUserPoint {
   @IsDefined()
   amount: number;
 
+  @ApiProperty()
+  @IsString()
+  @IsDefined()
+  reason: string;
+
   @ApiPropertyOptional()
   @IsString()
   @IsOptional()
-  reason: string;
+  deatail: string;
 }
