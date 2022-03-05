@@ -1,8 +1,8 @@
 import {apiClient} from "api";
 
-export const getUserList = async (code) => {
+export const getUserList = async (queryData) => {
   try {
-    const result = await apiClient.get(`/users`);
+    const result = await apiClient.get(`/users`, {params: queryData});
     return result;
   } catch (e) {
     console.error(e);
