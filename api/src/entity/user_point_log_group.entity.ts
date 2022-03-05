@@ -35,7 +35,7 @@ export class UserPointLogGroup extends BaseEntity implements IModifyUserPoint {
 
   @Column({
     nullable: false,
-    unsigned: true,
+    unsigned: false,
   })
   amount: number;
 

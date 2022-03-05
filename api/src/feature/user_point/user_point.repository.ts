@@ -18,9 +18,9 @@ export class UserPointRepository extends Repository<UserPoint> {
     userIds: number[],
     queryRunner?: QueryRunner
   ): SelectQueryBuilder<UserPoint> {
-    const findQuery = this.makeQueryBuilder(queryRunner).where(
-      "user_point.expire_at >= date(now())"
-    );
+    const findQuery = this.makeQueryBuilder(queryRunner)
+      .where("user_point.expire_at >= date(now())")
+      .andWhere("user_point.amount > 0");
     if (userIds.length > 0) {
       findQuery.andWhere("user_point.user_id in (:findPointUserIds)", {
         findPointUserIds: userIds,
@@ -28,6 +28,16 @@ export class UserPointRepository extends Repository<UserPoint> {
     } else {
       findQuery.andWhere("user_point.user_id is null");
     }
+
+    return findQuery;
+  }
+
+  findExpirePointQuery(
+    queryRunner?: QueryRunner
+  ): SelectQueryBuilder<UserPoint> {
+    const findQuery = this.makeQueryBuilder(queryRunner)
+      .where("user_point.expire_at < date(now())")
+      .andWhere("user_point.amount > 0");
 
     return findQuery;
   }

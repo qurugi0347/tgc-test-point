@@ -1,5 +1,5 @@
 import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
+import { Cron } from "@nestjs/schedule";
 import { Repository, QueryRunner } from "typeorm";
 
 import { UserPointRepository } from "./user_point.repository";
@@ -11,6 +11,7 @@ import {
   IPaginationResult,
   IPagination,
 } from "src/feature/common/common.interface";
+import { transactionRunner } from "src/module/database/transaction";
 
 @Injectable()
 export class UserPointService {
@@ -101,5 +102,34 @@ export class UserPointService {
       data: logs,
       total,
     };
+  }
+
+  // @Cron("*/10 * * * * *") // 테스트용
+  @Cron("0 0 * * *") // 자정마다 Expire
+  async expirePoints(): Promise<void> {
+    await transactionRunner(async (queryRunner: QueryRunner) => {
+      const expPoints = await this.userPointRepository
+        .findExpirePointQuery(queryRunner)
+        .getMany();
+
+      // 로그 쌓기
+      const logRecordByUserId = {};
+      expPoints.forEach((expPoint) => {
+        const { userId } = expPoint;
+        let logGroup = logRecordByUserId[userId];
+        if (!logGroup) {
+          logGroup = new UserPointLogGroup();
+          logGroup.amount = 0;
+          logGroup.userId = userId;
+          logGroup.reason = "유효기간 만료";
+          logRecordByUserId[userId] = logGroup;
+        }
+        logGroup.amount -= Number(expPoint.amount);
+        expPoint.amount = 0;
+      });
+
+      await queryRunner.manager.save(Object.values(logRecordByUserId));
+      await queryRunner.manager.save(expPoints);
+    });
   }
 }

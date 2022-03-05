@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
+import { ScheduleModule } from "@nestjs/schedule";
 import { MySqlConfigModule } from "src/module/database/config.module";
 import { MySqlConfigService } from "src/module/database/config.service";
 import { UserModule } from "src/feature/user/user.module";
@@ -13,6 +14,7 @@ const { ENV_PATH } = process.env;
       isGlobal: true,
       envFilePath: ENV_PATH,
     }),
+    ScheduleModule.forRoot(),
     TypeOrmModule.forRootAsync({
       imports: [MySqlConfigService],
       useClass: MySqlConfigService,
