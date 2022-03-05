@@ -15,7 +15,7 @@ import {
 import { User } from "src/entity";
 import { UserService } from "./";
 import { IPaginationResult } from "src/feature/common/common.interface";
-import { PaginationDto } from "src/feature/common/common.dto";
+import { PaginationDto, SearchDto } from "src/feature/common/common.dto";
 
 @ApiTags("User")
 @Controller("users")
@@ -30,9 +30,10 @@ export class UserController {
     })
   )
   async findAllUser(
-    @Query() query: PaginationDto
+    @Query() page: PaginationDto,
+    @Query() search: SearchDto
   ): Promise<IPaginationResult<User>> {
-    return this.userService.findAll(query);
+    return this.userService.findAll(page, search);
   }
 
   @Get("/:userId")

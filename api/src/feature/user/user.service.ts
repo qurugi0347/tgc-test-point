@@ -4,6 +4,7 @@ import { User } from "src/entity";
 import {
   IPagination,
   IPaginationResult,
+  ISearch,
 } from "src/feature/common/common.interface";
 import { UserRepository } from "./";
 
@@ -11,10 +12,26 @@ import { UserRepository } from "./";
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async findAll(pagination: IPagination): Promise<IPaginationResult<User>> {
+  async findAll(
+    pagination: IPagination,
+    search: ISearch
+  ): Promise<IPaginationResult<User>> {
     const userSelectQuery = this.userRepository
       .makeQueryBuilder()
-      .select(User.summaryData("user"));
+      .select(User.summaryData("user"))
+      .andWhere(
+        `
+        (
+          user.name like :search
+          or user.email like :search
+          or user.phone like :phoneSearch
+        )
+      `,
+        {
+          search: `%${search.search}%`,
+          phoneSearch: `%${search.search.replace(/-/, "")}%`,
+        }
+      );
     const total = await userSelectQuery.getCount();
     const userData = await userSelectQuery
       .offset(pagination.limit * (pagination.page - 1))
