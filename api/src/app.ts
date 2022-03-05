@@ -7,17 +7,12 @@ import { Express } from "express";
 import { ValidationPipe } from "@nestjs/common";
 import { AllExceptionsFilter } from "./module/exception-filter";
 
-export async function createApp(
-  expressApp?: Express
-): Promise<INestApplication> {
-  const app = await NestFactory.create(
-    AppModule,
-    expressApp ? new ExpressAdapter(expressApp) : undefined
-  );
+export async function createApp(): Promise<INestApplication> {
+  const app = await NestFactory.create(AppModule);
   // app.use(cookieParser());
   app.enableCors({
     origin: (origin, callback) => {
-      callback(null, false);
+      callback(null, true);
     },
     credentials: true,
   });
