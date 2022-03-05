@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 // import ErrorBoundary from "pages/Errors/ErrorBoundary";
 import {BrowserRouter} from "react-router-dom";
+import {ModalProvider} from "contexts/modal";
 
 import "./index.css";
 import App from "./App";
@@ -10,7 +11,9 @@ import reportWebVitals from "./reportWebVitals";
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <ModalProvider>
+        <App />
+      </ModalProvider>
     </BrowserRouter>
   </React.StrictMode>,
   document.getElementById("root"),
