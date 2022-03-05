@@ -12,6 +12,9 @@ const UserList = ({userData = []}) => {
   );
 };
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  overflow: scroll;
+  height: -webkit-fill-available;
+`;
 
 export default UserList;
