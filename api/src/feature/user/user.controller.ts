@@ -41,7 +41,15 @@ export class UserController {
   }
 
   @Get("/:userId/points")
-  async findUserPoint(@Param("userId", ParseIntPipe) userId: number) {
+  async findUserPoint(
+    @Param("userId", ParseIntPipe) userId: number
+  ): Promise<number> {
+    await this.userService.findOne(userId);
     return this.userPointService.findTotalPoint(userId);
+  }
+
+  @Get("/:userId")
+  async findUser(@Param("userId", ParseIntPipe) userId: number): Promise<User> {
+    return this.userService.findOne(userId);
   }
 }

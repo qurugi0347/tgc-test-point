@@ -1,4 +1,4 @@
-import { Injectable, HttpException } from "@nestjs/common";
+import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
 
 import { User } from "src/entity";
 import {
@@ -25,5 +25,16 @@ export class UserService {
       total: total,
       data: userData,
     };
+  }
+
+  async findOne(userId: number): Promise<User> {
+    const user = await this.userRepository.findOne(userId);
+    if (!user) {
+      throw new HttpException(
+        `해당하는 유저를 찾을 수 없습니다. ID: ${userId}`,
+        HttpStatus.NOT_FOUND
+      );
+    }
+    return user;
   }
 }
