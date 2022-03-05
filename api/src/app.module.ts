@@ -4,6 +4,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { MySqlConfigModule } from "src/module/database/config.module";
 import { MySqlConfigService } from "src/module/database/config.service";
 import { UserModule } from "src/feature/user/user.module";
+import { UserPointModule } from "src/feature/user_point/user_point.module";
 
 const { ENV_PATH } = process.env;
 @Module({
@@ -18,6 +19,7 @@ const { ENV_PATH } = process.env;
       inject: [MySqlConfigModule],
     }),
     UserModule,
+    UserPointModule,
   ],
 })
 export class AppModule {}
