@@ -1,11 +1,19 @@
 import React from "react";
 import styled from "styled-components";
+import BaseButton from "components/BaseButton";
+import {useNavigate} from "react-router-dom";
 
 const MainPage = () => {
+  const navigate = useNavigate();
   return (
     <Wrapper>
       <Title>포인트 관리</Title>
-      <Button>로그인</Button>
+      <BaseButton
+        onClick={() => {
+          navigate("/user");
+        }}>
+        로그인
+      </BaseButton>
     </Wrapper>
   );
 };
@@ -19,7 +27,5 @@ const Wrapper = styled.div`
 `;
 
 const Title = styled.h1``;
-
-const Button = styled.button``;
 
 export default MainPage;
