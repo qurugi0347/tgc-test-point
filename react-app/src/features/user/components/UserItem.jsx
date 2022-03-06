@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import useModalContext from "hooks/useModalContext";
-import UserDetail from "./UserDetail";
+import UserDetail from "components/UserDetail/UserDetail";
 import {useNavigate} from "react-router-dom";
 
 const UserItem = ({id, name, email, phone}) => {

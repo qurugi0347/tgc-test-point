@@ -4,12 +4,18 @@ import BaseButton from "components/BaseButton";
 import LogItem from "features/points/components/LogItem";
 import {getUserDetail} from "api/user";
 import useModalContext from "hooks/useModalContext";
-import dayjs from "dayjs";
+import useTab from "hooks/useTab";
+import PointLogSection from "./LogSection";
+import ModifyPoint from "./ModifyPoint";
 
 const UserDetail = ({id, onClickDetail, onClickModify}) => {
   const modalContext = useModalContext();
   const [userInfo, setUserInfo] = useState(null);
   const [userPointLogs, setUserPointLogs] = useState([]);
+
+  const {selectedTab, tabComponent} = useTab({
+    tabs: [{name: "최근 로그"}, {name: "포인트 수정"}],
+  });
 
   const getData = async () => {
     const res = await getUserDetail(id);
@@ -28,6 +34,29 @@ const UserDetail = ({id, onClickDetail, onClickModify}) => {
     getData();
   }, [id]);
 
+  const recentLogs = useMemo(() => {
+    return (
+      <PointLogSection
+        userPointLogs={userPointLogs}
+        onClickDetail={onClickDetail}
+      />
+    );
+  }, [userPointLogs, onClickDetail]);
+
+  const modifyPointComponent = useMemo(() => {
+    return <ModifyPoint {...userInfo} />;
+  }, [userInfo]);
+
+  const renderContent = useMemo(() => {
+    switch (selectedTab) {
+      case 0:
+        return recentLogs;
+      case 1:
+        return modifyPointComponent;
+    }
+    return null;
+  }, [recentLogs, modifyPointComponent, selectedTab]);
+
   return (
     <Wrapper>
       <div>
@@ -38,39 +67,20 @@ const UserDetail = ({id, onClickDetail, onClickModify}) => {
         if (!userInfo) return <div>로딩중</div>;
         const {name, email, phone, point} = userInfo;
         return (
-          <>
-            <InfoSection>
-              <div>보유 포인트:</div>
-              <div>{point}P</div>
-              <div>이름:</div>
-              <div>{name}</div>
-              <div>전화번호:</div>
-              <div>{phone}</div>
-              <div>이메일:</div>
-              <div>{email}</div>
-            </InfoSection>
-
-            <BaseButton onClick={() => onClickModify(userInfo)}>
-              포인트 수정
-            </BaseButton>
-          </>
+          <InfoSection>
+            <div>보유 포인트:</div>
+            <div>{point}P</div>
+            <div>이름:</div>
+            <div>{name}</div>
+            <div>전화번호:</div>
+            <div>{phone}</div>
+            <div>이메일:</div>
+            <div>{email}</div>
+          </InfoSection>
         );
       }, [userInfo])}
-      {useMemo(() => {
-        return (
-          <>
-            <div>최근 로그</div>
-            <LogSection>
-              {userPointLogs.map((userPointLog) => {
-                return <LogItem key={userPointLog.id} {...userPointLog} />;
-              })}
-              {userPointLogs.length === 0 &&
-                "포인트 적립, 차감 내역이 없습니다."}
-            </LogSection>
-            <BaseButton onClick={onClickDetail}>자세히보기</BaseButton>
-          </>
-        );
-      }, [userPointLogs])}
+      {tabComponent}
+      {renderContent}
     </Wrapper>
   );
 };
@@ -93,10 +103,6 @@ const InfoSection = styled.div`
   grid-template-columns: 100px 1fr;
   border-bottom: 1px solid;
   width: 100%;
-`;
-
-const LogSection = styled.div`
-  margin-top: 10px;
 `;
 
 export default UserDetail;
