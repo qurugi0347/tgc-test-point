@@ -16,14 +16,24 @@ export class UserPointLogGroupRepository extends Repository<UserPointLogGroup> {
     return this.createQueryBuilder("user_point_log_group", queryRunner);
   }
 
+  findAllPointLogsQuery(
+    queryRunner?: QueryRunner
+  ): SelectQueryBuilder<UserPointLogGroup> {
+    return this.makeQueryBuilder(queryRunner).orderBy(
+      "user_point_log_group.created_at",
+      "DESC"
+    );
+  }
+
   findUserPointLogsQuery(
     userId: number,
     queryRunner?: QueryRunner
   ): SelectQueryBuilder<UserPointLogGroup> {
-    return this.makeQueryBuilder(queryRunner)
-      .andWhere("user_point_log_group.user_id = :findLogUserId", {
+    return this.findAllPointLogsQuery(queryRunner).andWhere(
+      "user_point_log_group.user_id = :findLogUserId",
+      {
         findLogUserId: userId,
-      })
-      .orderBy("user_point_log_group.created_at", "DESC");
+      }
+    );
   }
 }

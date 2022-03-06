@@ -6,6 +6,7 @@ import { MySqlConfigModule } from "src/module/database/config.module";
 import { MySqlConfigService } from "src/module/database/config.service";
 import { UserModule } from "src/feature/user/user.module";
 import { UserPointModule } from "src/feature/user_point/user_point.module";
+import { UserPointLogGroupModule } from "src/feature/user_point_log_group/user_point_log_group.module";
 
 const { ENV_PATH } = process.env;
 @Module({
@@ -22,6 +23,7 @@ const { ENV_PATH } = process.env;
     }),
     UserModule,
     UserPointModule,
+    UserPointLogGroupModule,
   ],
 })
 export class AppModule {}
