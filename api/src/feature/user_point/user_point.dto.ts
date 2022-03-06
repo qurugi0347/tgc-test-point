@@ -29,5 +29,5 @@ export class ModifyPointDto implements IModifyUserPoint {
   @ApiPropertyOptional()
   @IsString()
   @IsOptional()
-  deatail: string;
+  detail: string;
 }
