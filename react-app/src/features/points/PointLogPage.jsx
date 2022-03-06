@@ -4,14 +4,16 @@ import {useLocation, useNavigate} from "react-router-dom";
 import BaseLayout from "components/layout/BaseLayout";
 import useModalContext from "hooks/useModalContext";
 import Pagination from "components/Pagination";
+import PointLogList from "./components/PointLogList";
 import queryString from "query-string";
-import {getUserList} from "api/user";
+import {getUserPointLogs} from "api/point";
 
 const UserPage = () => {
   const modalContext = useModalContext();
   const location = useLocation();
   const navigate = useNavigate();
   const [maxPage, setMaxPage] = useState(1);
+  const [pointLogData, setPointLogData] = useState([]);
 
   const queryData = useMemo(() => {
     return queryString.parse(location.search);
@@ -19,7 +21,7 @@ const UserPage = () => {
 
   const getData = async (searchQuery) => {
     modalContext.loading();
-    const res = await getUserList(searchQuery);
+    const res = await getUserPointLogs(searchQuery);
     modalContext.popLoading();
     if (res.status >= 400) {
       modalContext.alert({
@@ -28,6 +30,7 @@ const UserPage = () => {
       });
       return;
     }
+    setPointLogData(res.data.data);
     setMaxPage(Math.ceil(res.data.total / res.data.limit) || 1);
   };
 
@@ -49,6 +52,8 @@ const UserPage = () => {
   return (
     <BaseLayout title="포인트 내역">
       <ContentsWrapper>
+        <div />
+        <PointLogList logData={pointLogData} />
         <Pagination
           maxPage={maxPage}
           page={queryData.page || 1}
