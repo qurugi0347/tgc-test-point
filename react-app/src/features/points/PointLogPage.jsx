@@ -5,6 +5,7 @@ import BaseLayout from "components/layout/BaseLayout";
 import useModalContext from "hooks/useModalContext";
 import Pagination from "components/Pagination";
 import PointLogList from "./components/PointLogList";
+import SearchSection from "./components/SearchSection";
 import queryString from "query-string";
 import {getUserPointLogs} from "api/point";
 
@@ -52,7 +53,7 @@ const UserPage = () => {
   return (
     <BaseLayout title="포인트 내역">
       <ContentsWrapper>
-        <div />
+        <SearchSection />
         <PointLogList logData={pointLogData} />
         <Pagination
           maxPage={maxPage}
