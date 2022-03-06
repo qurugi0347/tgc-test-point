@@ -2,13 +2,11 @@ import React from "react";
 import styled from "styled-components";
 import UserItem from "./UserItem";
 
-const UserList = ({userData = [], onClickItem}) => {
+const UserList = ({userData = []}) => {
   return (
     <Wrapper>
       {userData.map((userInfo) => {
-        return (
-          <UserItem key={userInfo.id} {...userInfo} onClickItem={onClickItem} />
-        );
+        return <UserItem key={userInfo.id} {...userInfo} />;
       })}
     </Wrapper>
   );

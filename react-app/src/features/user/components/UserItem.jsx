@@ -1,11 +1,27 @@
 import React from "react";
 import styled from "styled-components";
+import useModalContext from "hooks/useModalContext";
+import UserDetail from "./UserDetail";
+import {useNavigate} from "react-router-dom";
 
-const UserItem = ({id, name, email, phone, onClickItem}) => {
+const UserItem = ({id, name, email, phone}) => {
+  const navigate = useNavigate();
+  const modalContext = useModalContext();
   return (
     <Wrapper
       onClick={() => {
-        if (onClickItem) onClickItem(id);
+        modalContext.custom(
+          <UserDetail
+            id={id}
+            onClickDetail={() => {
+              modalContext.close();
+              navigate({
+                pathname: `/points/`,
+                search: `?userId=${id}`,
+              });
+            }}
+          />,
+        );
       }}>
       <div>{name}</div>
       <div>

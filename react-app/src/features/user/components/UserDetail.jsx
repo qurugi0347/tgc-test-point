@@ -1,11 +1,12 @@
 import React, {useEffect, useState, useMemo} from "react";
 import styled from "styled-components";
 import BaseButton from "components/BaseButton";
+import LogItem from "features/points/components/LogItem";
 import {getUserDetail} from "api/user";
 import useModalContext from "hooks/useModalContext";
 import dayjs from "dayjs";
 
-const UserDetail = ({id, onClickDetail}) => {
+const UserDetail = ({id, onClickDetail, onClickModify}) => {
   const modalContext = useModalContext();
   const [userInfo, setUserInfo] = useState(null);
   const [userPointLogs, setUserPointLogs] = useState([]);
@@ -37,34 +38,31 @@ const UserDetail = ({id, onClickDetail}) => {
         if (!userInfo) return <div>로딩중</div>;
         const {name, email, phone, point} = userInfo;
         return (
-          <InfoSection>
-            <div>보유 포인트:</div>
-            <div>{point}P</div>
-            <div>이름:</div>
-            <div>{name}</div>
-            <div>전화번호:</div>
-            <div>{phone}</div>
-            <div>이메일:</div>
-            <div>{email}</div>
-          </InfoSection>
+          <>
+            <InfoSection>
+              <div>보유 포인트:</div>
+              <div>{point}P</div>
+              <div>이름:</div>
+              <div>{name}</div>
+              <div>전화번호:</div>
+              <div>{phone}</div>
+              <div>이메일:</div>
+              <div>{email}</div>
+            </InfoSection>
+
+            <BaseButton onClick={() => onClickModify(userInfo)}>
+              포인트 수정
+            </BaseButton>
+          </>
         );
       }, [userInfo])}
       {useMemo(() => {
         return (
           <>
+            <div>최근 로그</div>
             <LogSection>
               {userPointLogs.map((userPointLog) => {
-                const {amount, createdAt, reason, detail} = userPointLog;
-                return (
-                  <LogItem>
-                    <div>{dayjs(createdAt).format("YY-MM-DD hh:mm")}</div>
-                    <div>
-                      <div>{amount}P</div>
-                      <div>{reason}</div>
-                    </div>
-                    <div>{detail}</div>
-                  </LogItem>
-                );
+                return <LogItem key={userPointLog.id} {...userPointLog} />;
               })}
               {userPointLogs.length === 0 &&
                 "포인트 적립, 차감 내역이 없습니다."}
@@ -99,14 +97,6 @@ const InfoSection = styled.div`
 
 const LogSection = styled.div`
   margin-top: 10px;
-`;
-
-const LogItem = styled.div`
-  border-bottom: 1px solid;
-  div * {
-    display: inline-block;
-    padding: 2px 4px;
-  }
 `;
 
 export default UserDetail;
