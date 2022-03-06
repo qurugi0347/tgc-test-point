@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom";
 
 const menus = [
   {name: "유저", url: "/user"},
-  {name: "설정", url: "/setting"},
+  {name: "포인트 내역", url: "/points"},
 ];
 
 const Menu = () => {
