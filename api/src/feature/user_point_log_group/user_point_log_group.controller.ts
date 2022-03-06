@@ -18,6 +18,7 @@ import { IPaginationResult } from "src/feature/common/common.interface";
 import { PaginationDto } from "src/feature/common/common.dto";
 import { UserService } from "../user";
 import { UserPointLogGroupService } from "./user_point_log_group.service";
+import { LogFilterDto } from "./user_point_log_group.dto";
 
 @ApiTags("UserPointLogs")
 @Controller("/point")
@@ -34,8 +35,9 @@ export class UserPointLogGroupController {
     })
   )
   async findUserPointLogs(
-    @Query() pagination: PaginationDto
+    @Query() pagination: PaginationDto,
+    @Query() filter: LogFilterDto
   ): Promise<IPaginationResult<UserPointLogGroup>> {
-    return this.userPointLogGroupService.findAllPointLogs(pagination);
+    return this.userPointLogGroupService.findAllPointLogs(pagination, filter);
   }
 }
