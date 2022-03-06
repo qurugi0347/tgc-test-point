@@ -26,11 +26,6 @@ const UserItem = ({amount, detail, reason, createdAt, user}) => {
         );
       }}>
       <div>{dayjs(createdAt).format("YY-MM-DD hh:mm")}</div>
-      <div>
-        <span>{amount}</span>
-        <span>{reason}</span>
-      </div>
-      <div>{detail}</div>
       {useMemo(() => {
         if (!user) return null;
         return (
@@ -40,6 +35,12 @@ const UserItem = ({amount, detail, reason, createdAt, user}) => {
           </UserSection>
         );
       }, [user])}
+      <PointInfo>
+        <span>{Math.abs(amount)}P</span>
+        <span>{amount > 0 ? "부여" : "차감"}</span>
+      </PointInfo>
+      <Reason>{reason}</Reason>
+      {detail && <Reason>{detail}</Reason>}
     </Wrapper>
   );
 };
@@ -54,6 +55,16 @@ const UserSection = styled.div`
   *:not(:first-child) {
     margin-left: 4px;
   }
+`;
+
+const PointInfo = styled.div`
+  *:not(:first-child) {
+    margin-left: 4px;
+  }
+`;
+
+const Reason = styled.div`
+  padding-left: 20px;
 `;
 
 export default UserItem;
