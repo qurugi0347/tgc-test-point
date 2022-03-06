@@ -1,10 +1,30 @@
 import React, {useMemo} from "react";
 import styled from "styled-components";
 import dayjs from "dayjs";
+import useModalContext from "hooks/useModalContext";
+import UserDetail from "components/UserDetail/UserDetail";
+import {useNavigate} from "react-router-dom";
 
 const UserItem = ({amount, detail, reason, createdAt, user}) => {
+  const navigate = useNavigate();
+  const modalContext = useModalContext();
+
   return (
-    <Wrapper>
+    <Wrapper
+      onClick={() => {
+        modalContext.custom(
+          <UserDetail
+            id={user.id}
+            onClickDetail={() => {
+              modalContext.close();
+              navigate({
+                pathname: `/points/`,
+                search: `?userId=${user.id}`,
+              });
+            }}
+          />,
+        );
+      }}>
       <div>{dayjs(createdAt).format("YY-MM-DD hh:mm")}</div>
       <div>
         <span>{amount}</span>
